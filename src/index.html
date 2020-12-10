@@ -1,12 +1,53 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <title>Hello World!</title>
-    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="index.css" />
+    <!-- Insert this line above script imports  -->
+    <!-- <script>
+      if (typeof module === "object") {
+        window.module = module;
+        module = undefined;
+      }
+    </script> -->
+    <script>window.$ = window.jQuery = require('./jquery.js');</script>
+    <script src="./socketClient.js"></script>
   </head>
   <body>
-    <h1>💖 Hello World!</h1>
-    <p>Welcome to your Electron application.</p>
+    <h1 class="text-center">LMS that actually works ¯\_(ツ)_/¯</h1>
+    <div class="socket-info ">
+      <div class="form-group">
+        <label>IP address</label>
+        <input
+          type="text"
+          name="ip"
+          class="form-control"
+          placeholder="127.0.0.1"
+        />
+      </div>
+      <div class="form-group">
+        <label>Port</label>
+        <input
+          type="text"
+          name="port"
+          class="form-control"
+          placeholder="( ͡° ͜ʖ ͡°)"
+        />
+      </div>
+      <button class="btn btn-primary connect-btn">Connect</button>
+    </div>
+    <div class="dept-selection d-none">
+      <div class="form-group">
+        <label for="deptsSelect">Departments</label>
+        <select class="form-control" id="deptsSelect">
+        </select>
+      </div>
+      <ul class="list-group offerings">
+        <li class="list-group-item">Cras justo odio</li>
+
+      </ul>
+    </div>
+    <!-- <p>Welcome to your Electron application.</p> -->
   </body>
 </html>
