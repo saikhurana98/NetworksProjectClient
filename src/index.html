@@ -2,27 +2,20 @@
 <html>
   <head>
     <meta charset="UTF-8" />
-    <title>Hello World!</title>
+    <title>Learning Management System</title>
     <link rel="stylesheet" href="index.css" />
-    <!-- Insert this line above script imports  -->
-    <!-- <script>
-      if (typeof module === "object") {
-        window.module = module;
-        module = undefined;
-      }
-    </script> -->
     <script>window.$ = window.jQuery = require('./jquery.js');</script>
     <script src="./socketClient.js"></script>
   </head>
-  <body>
-    <h1 class="text-center">LMS that actually works ¯\_(ツ)_/¯</h1>
+  <body class="container">
+    <h1 class="text-center">Learning Management System</h1>
     <div class="socket-info ">
       <div class="form-group">
         <label>IP address</label>
         <input
           type="text"
           name="ip"
-          class="form-control"
+          class="form-control border border-dark rounded-0"
           placeholder="127.0.0.1"
         />
       </div>
@@ -31,11 +24,11 @@
         <input
           type="text"
           name="port"
-          class="form-control"
-          placeholder="( ͡° ͜ʖ ͡°)"
+          class="form-control border border-dark rounded-0"
+          placeholder="42069"
         />
       </div>
-      <button class="btn btn-primary connect-btn">Connect</button>
+      <button class="btn btn-dark connect-btn rounded-0 border-dark">Connect</button>
     </div>
     <div class="dept-selection d-none">
       <div class="form-group">

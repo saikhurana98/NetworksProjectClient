@@ -10,8 +10,11 @@ const createWindow = () => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     autoHideMenuBar:true,
-    width: 800,
+    width: 600,
     height: 600,
+    center: true,
+      icon: path.join(__dirname, '../assets/favicon.png'),
+      darkTheme: true,
     webPreferences: {
       nodeIntegration: true,
     }
