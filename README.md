@@ -1,8 +1,6 @@
 
 
 ### For Client
-npm install 
-npm start
 
 ```
 npm install 
