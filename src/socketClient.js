@@ -8,9 +8,7 @@ $(document).on('click', '.connect-btn', async function() {
     let ip = $('[name=ip]').val();
     let port = $('[name=port]').val();
 
-    if(ip == '') ip = defaultIp;
-    // else if(!net.isIP(ip)) ip = await dns.resolve(ip);
-
+    if (ip == '') ip = defaultIp;
     if(port == '') port = defaultPort;
     else port = parseInt(port);
 
@@ -64,7 +62,8 @@ client.on('data', function (data) {
     else if(obj.type == 'courseDesc') {
         if(obj.success) {
             let courseDesc = obj.payload;
-            $('.modal-body').html(courseDesc.desc.replace(/\n/g, "<br />"));
+            let desc = `<b>Timings:</b> ${courseDesc.TimingsForLS} <br /> <b>Faculty:</b> ${courseDesc.FacultyLS} <br />  ${courseDesc.desc.replace(/\n/g, "<br />")} `
+            $('.modal-body').html(desc);
             $('#exampleModal').modal('show');
         }
         else console.log("Error", obj.msg);

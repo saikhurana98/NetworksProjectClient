@@ -207,7 +207,7 @@
         "LSNo": 1,
         "TimingsForLS": "Mon-(10:10-11:40), Wed-(10:10-11:40)",
         "WaitingCount": 0,
-        "desc": "An intelligent system may be characterized as one that has,\n\n\u000f The ability to store, represent, and retrieve knowledge;\n\u000f The ability to extract pertinent information from irrelevant details;\n\u000f The ability to learn (adapt);\n\u000f The ability to draw inferences from incomplete information.\n\nIn many cases, such systems can be constructed by learning from examples rather than from 1st principles or domain specific rules (both of which may be incompletely known or be too cumbersome to apply). An impressive array of applications have already been realized using this paradigm of learning from examples and you will be able to construct your intelligent systems on completion of this class.\nSounds Promising? Welcome to Introduction to Machine Learning.\n"
+        "desc": "An intelligent system may be characterized as one that has,\n\n&#x2022 The ability to store, represent, and retrieve knowledge;\n&#x2022 The ability to extract pertinent information from irrelevant details;\n&#x2022 The ability to learn (adapt);\n&#x2022 The ability to draw inferences from incomplete information.\n\nIn many cases, such systems can be constructed by learning from examples rather than from 1st principles or domain specific rules (both of which may be incompletely known or be too cumbersome to apply). An impressive array of applications have already been realized using this paradigm of learning from examples and you will be able to construct your intelligent systems on completion of this class.\nSounds Promising? Welcome to Introduction to Machine Learning.\n"
     },
     "CS-1319": {
         "Availability": "No Room",
