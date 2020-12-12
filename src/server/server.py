@@ -1,11 +1,19 @@
-
-import socket
 from threading import Thread
+from hashlib import sha256
+from secrets import randbits
 import json
+import csv
+import socket
 
 descs = {}
 with open("descs.json") as fp:
     descs = json.loads(fp.read())
+
+userRecords = {}
+with open('users.csv') as fp:
+    reader = csv.reader(fp)
+    for userRecord in reader:
+        userRecords[userRecord[0]] = { 'salt': userRecord[1], 'hash': userRecord[2] }
 
 depts = ['CS', 'PSY', 'ENG', 'MAT', 'ECO', 'PHI', 'HIS']
 
@@ -34,8 +42,6 @@ for ls in descs.keys():
     courseIdentifier = f"{descs[ls]['CourseCode']}: {descs[ls]['CourseTitle']}"
     deptOfferings[codeToDept[prefix]].append(courseIdentifier)
 
-print(deptOfferings)
-
 serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 serversocket.bind(('127.0.0.1', 42069))
 serversocket.listen()
@@ -45,6 +51,32 @@ print('Server is running! (IP Address %s, Port %s)' % ('127.0.0.1', 42069))
 def func(clientsocket, address):
     print("A client just connected.")
     try:
+        while True:
+            authMsg = json.loads(clientsocket.recv(1024).decode())
+            username = authMsg['username']
+            password = authMsg['password']
+            if authMsg['type'] == 'register':
+                if username in userRecords:
+                    clientsocket.send(json.dumps({'type': 'auth','success': False, 'msg': 'User already exists.'}).encode())
+                else:
+                    salt = str(randbits(20))
+                    hashedPswd = sha256(f"{password}{salt}").hexdigest()
+                    userRecords[username] = {'salt': salt, 'hash': hashedPswd}
+                    with open('users.csv', 'a') as fp:
+                        writer = csv.writer(fp)
+                        writer.writerow([username, salt, hashedPswd])
+                    break
+            elif authMsg['type'] == 'login':
+                if username not in userRecords:
+                    clientsocket.send(json.dumps({'type': 'auth','success': False, 'msg': 'User not found.'}).encode())
+                else:
+                    hashedPswd = sha256(f"{password}{userRecords[username]['salt']}").hexdigest()
+                    if hashedPswd == userRecords[username]['hash']:
+                        break
+                    else:
+                        clientsocket.send(json.dumps({'type': 'auth','success': False, 'msg': 'Incorrect username/password.'}).encode())
+
+
         depts = list(deptOfferings.keys())
         reply1 = json.dumps({"type": "init", "payload": depts})
         clientsocket.send(reply1.encode())

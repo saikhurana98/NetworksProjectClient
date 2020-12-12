@@ -2,7 +2,7 @@ from bs4 import BeautifulSoup
 import requests
 import json
 
-userSessionId = ""
+userSessionId = "" # Session ID (in the cookie of an Ashoka student)
 
 lses = ""
 with open("allLSes.json") as fp:
