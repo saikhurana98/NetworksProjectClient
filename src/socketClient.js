@@ -26,6 +26,17 @@ $(document).on("click", ".connect-btn", async function () {
   }
 });
 
+
+$(document).on("click", ".signInlink", () => {
+  $(".user-reg").addClass("d-none")
+  $(".user-login").removeClass("d-none");
+});
+
+$(document).on("click", ".signUplink", () => {
+  $(".user-login").addClass("d-none")
+  $(".user-reg").removeClass("d-none");
+});
+
 $(document).on("change", "#deptsSelect", function () {
   let selectedDeptName = $("#deptsSelect").val();
   let payload = JSON.stringify({
