@@ -4,6 +4,9 @@ body {
   max-width: 38rem;
   padding: 2rem;
 }
+.clicky-item {
+  cursor:pointer;
+}
 /*!
  * Bootstrap v4.3.1 (https://getbootstrap.com/)
  * Copyright 2011-2019 The Bootstrap Authors

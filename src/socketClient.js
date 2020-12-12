@@ -1,17 +1,17 @@
 var net = require('net');
-
+var dns = require('dns')
 let defaultIp = '127.0.0.1';
 let defaultPort = 42069;
 let client = new net.Socket();
 
-$(document).on('click', '.connect-btn', function() {
-    console.log("Triggered.");
+$(document).on('click', '.connect-btn', async function() {
     let ip = $('[name=ip]').val();
     let port = $('[name=port]').val();
 
-    if(!net.isIP(ip)) ip = defaultIp;
+    if(ip == '') ip = defaultIp;
+    // else if(!net.isIP(ip)) ip = await dns.resolve(ip);
 
-    if(port == '') { port = defaultPort; }
+    if(port == '') port = defaultPort;
     else port = parseInt(port);
 
     client.connect(port, ip, () => {
@@ -22,8 +22,15 @@ $(document).on('click', '.connect-btn', function() {
 
 $(document).on('change', '#deptsSelect', function() {
     let selectedDeptName = $("#deptsSelect").val();
-    console.log(selectedDeptName);
-    client.write(selectedDeptName);
+    let payload = JSON.stringify({'type': 'offerings', 'payload': selectedDeptName});
+    client.write(payload);
+});
+
+$(document).on('click', '.clicky-item', function() {
+    let courseCode = $(this).attr('data-course');
+    let payload = JSON.stringify({'type': 'courseDesc', 'payload': courseCode});
+    console.log(payload);
+    client.write(payload);
 });
 
 client.on('data', function (data) {
@@ -35,16 +42,31 @@ client.on('data', function (data) {
             let deptOptionElem = $("<option></option>").text(deptName).val(deptName);
             $("#deptsSelect").append(deptOptionElem);
         }
+        $("#deptsSelect").trigger("change");
     }
     else if(obj.type == 'deptOfferings') {
         if(obj.success) {
             $(".offerings").empty();
             for(let offeringInd = 0; offeringInd < obj.offerings.length; offeringInd++) {
                 let offeringName = obj.offerings[offeringInd];
-                let offeringElem = $("<li></li>").text(offeringName).addClass('list-group-item');
+                let offeringCode = obj.offerings[offeringInd].split(":")[0];
+                let offeringElem = $("<li></li>")
+                                        .attr('data-course', offeringCode)
+                                        .text(offeringName)
+                                        .addClass('list-group-item')
+                                        .addClass('clicky-item');
+
                 $(".offerings").append(offeringElem);
             }   
         }
         else console.log("Oops! Something went wrong. Here's what the server says: "+obj.msg);
+    }
+    else if(obj.type == 'courseDesc') {
+        if(obj.success) {
+            let courseDesc = obj.payload;
+            $('.modal-body').html(courseDesc.desc.replace(/\n/g, "<br />"));
+            $('#exampleModal').modal('show');
+        }
+        else console.log("Error", obj.msg);
     }
 });
