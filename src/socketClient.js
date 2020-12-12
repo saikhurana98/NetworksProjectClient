@@ -11,17 +11,17 @@ $(document).on("click", ".connect-btn", async function () {
   else port = parseInt(port);
 
   if (ip == "") ip = defaultIp;
-  else if (net.isIPv4(ip)) {
+  if (net.isIPv4(ip)) {
     client.connect(port, ip, () => {
       $(".socket-info").hide();
-      $(".dept-selection").removeClass("d-none");
+      $(".user-login").removeClass('d-none');
     });
   } else {
     dns.lookup(ip, (err, address, family) => {
       client.connect(port, address, () => {
         $(".socket-info").hide();
-        $(".dept-selection").removeClass("d-none");
-      });
+        $(".user-login").removeClass('d-none');
+    });
     });
   }
 });
@@ -35,6 +35,34 @@ $(document).on("click", ".signInlink", () => {
 $(document).on("click", ".signUplink", () => {
   $(".user-login").addClass("d-none")
   $(".user-reg").removeClass("d-none");
+});
+
+$(document).on('click', '.register-btn', function() {
+    let username = $('[name=reg-username]').val();
+    let password = $('[name=reg-password]').val();
+    let confirmPassword = $('[name=reg-confirmPassword]').val();
+    if(password != confirmPassword) {
+        swal("Entered passwords do not match");
+        $(password).focus();
+        return;
+    }
+    let payload = JSON.stringify({
+        type: 'register',
+        username, 
+        password
+    });
+    client.write(payload)
+});
+
+$(document).on('click', '.login-btn', function() {
+    let username = $('[name=login-username]').val();
+    let password = $('[name=login-password]').val();
+    let payload = JSON.stringify({
+        type: 'login',
+        username, 
+        password
+    });
+    client.write(payload)
 });
 
 $(document).on("change", "#deptsSelect", function () {
@@ -66,6 +94,9 @@ client.on("data", function (data) {
       $("#deptsSelect").append(deptOptionElem);
     }
     $("#deptsSelect").trigger("change");
+    $('.dept-selection').removeClass('d-none');
+    $('.user-login').addClass('d-none');
+    $('.user-reg').addClass('d-none');
   } else if (obj.type == "deptOfferings") {
     if (obj.success) {
       $(".offerings").empty();
@@ -99,5 +130,7 @@ client.on("data", function (data) {
       $(".modal-body").html(desc);
       $("#exampleModal").modal("show");
     } else console.log("Error", obj.msg);
+  } else if (obj.type == 'auth') {
+      alert(obj.msg);
   }
 });

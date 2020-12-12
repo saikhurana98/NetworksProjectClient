@@ -13,6 +13,7 @@ userRecords = {}
 with open('users.csv') as fp:
     reader = csv.reader(fp)
     for userRecord in reader:
+        if len(userRecord) == 0: continue
         userRecords[userRecord[0]] = { 'salt': userRecord[1], 'hash': userRecord[2] }
 
 depts = ['CS', 'PSY', 'ENG', 'MAT', 'ECO', 'PHI', 'HIS']
@@ -60,7 +61,8 @@ def func(clientsocket, address):
                     clientsocket.send(json.dumps({'type': 'auth','success': False, 'msg': 'User already exists.'}).encode())
                 else:
                     salt = str(randbits(20))
-                    hashedPswd = sha256(f"{password}{salt}").hexdigest()
+                    toHash = f"{password}{salt}".encode('utf-8')
+                    hashedPswd = sha256(toHash).hexdigest()
                     userRecords[username] = {'salt': salt, 'hash': hashedPswd}
                     with open('users.csv', 'a') as fp:
                         writer = csv.writer(fp)
@@ -70,7 +72,8 @@ def func(clientsocket, address):
                 if username not in userRecords:
                     clientsocket.send(json.dumps({'type': 'auth','success': False, 'msg': 'User not found.'}).encode())
                 else:
-                    hashedPswd = sha256(f"{password}{userRecords[username]['salt']}").hexdigest()
+                    toHash = f"{password}{userRecords[username]['salt']}".encode('utf-8')
+                    hashedPswd = sha256(toHash).hexdigest()
                     if hashedPswd == userRecords[username]['hash']:
                         break
                     else:
