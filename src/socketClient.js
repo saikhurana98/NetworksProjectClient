@@ -1,5 +1,6 @@
 var net = require("net");
 var dns = require("dns");
+const Swal = require('sweetalert2')
 let defaultIp = "127.0.0.1";
 let defaultPort = 42069;
 let client = new net.Socket();
@@ -21,7 +22,7 @@ $(document).on("click", ".connect-btn", async function () {
       client.connect(port, address, () => {
         $(".socket-info").hide();
         $(".user-login").removeClass('d-none');
-    });
+      });
     });
   }
 });
@@ -37,32 +38,42 @@ $(document).on("click", ".signUplink", () => {
   $(".user-reg").removeClass("d-none");
 });
 
-$(document).on('click', '.register-btn', function() {
-    let username = $('[name=reg-username]').val();
-    let password = $('[name=reg-password]').val();
-    let confirmPassword = $('[name=reg-confirmPassword]').val();
-    if(password != confirmPassword) {
-        swal("Entered passwords do not match");
-        $(password).focus();
-        return;
-    }
-    let payload = JSON.stringify({
-        type: 'register',
-        username, 
-        password
-    });
-    client.write(payload)
+$(document).on('click', '.register-btn', function () {
+  let username = $('[name=reg-username]').val();
+  let password = $('[name=reg-password]').val();
+  let confirmPassword = $('[name=reg-confirmPassword]').val();
+
+  if (username == "") Swal.fire("Username Cannot be empty");
+  if (password == "") Swal.fire("Password Cannot be empty");
+
+  if (password != confirmPassword) {
+    Swal.fire("Entered passwords do not match");
+    $(password).focus();
+    return;
+  }
+  let payload = JSON.stringify({
+    type: 'register',
+    username,
+    password
+  });
+  client.write(payload)
 });
 
-$(document).on('click', '.login-btn', function() {
-    let username = $('[name=login-username]').val();
-    let password = $('[name=login-password]').val();
+$(document).on('click', '.login-btn', function () {
+  let username = $('[name=login-username]').val();
+  let password = $('[name=login-password]').val();
+
+  if (username == "") Swal.fire("Username cannot be left empty");
+  if (password == "") Swal.fire("Password cannot be left empty");
+
+  if (username != "" && password != "") {
     let payload = JSON.stringify({
-        type: 'login',
-        username, 
-        password
+      type: 'login',
+      username,
+      password
     });
     client.write(payload)
+  }
 });
 
 $(document).on("change", "#deptsSelect", function () {
@@ -101,9 +112,7 @@ client.on("data", function (data) {
     if (obj.success) {
       $(".offerings").empty();
       for (
-        let offeringInd = 0;
-        offeringInd < obj.offerings.length;
-        offeringInd++
+        let offeringInd = 0; offeringInd < obj.offerings.length; offeringInd++
       ) {
         let offeringName = obj.offerings[offeringInd];
         let offeringCode = obj.offerings[offeringInd].split(":")[0];
@@ -131,6 +140,6 @@ client.on("data", function (data) {
       $("#exampleModal").modal("show");
     } else console.log("Error", obj.msg);
   } else if (obj.type == 'auth') {
-      alert(obj.msg);
+    Swal.fire(obj.msg);
   }
 });
